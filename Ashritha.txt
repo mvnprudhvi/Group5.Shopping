@@ -1,0 +1,2 @@
+create table e1
+create table emp(eno int)
