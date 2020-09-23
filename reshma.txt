@@ -1,6 +1,6 @@
 
 
---Adding a new column email in the table
+--Adding a new column email in the customer table
 
 CREATE PROC ADDCOL(@TN VARCHAR(20))
 AS
