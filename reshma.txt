@@ -1,2 +1,12 @@
 
-create table    
+
+--Adding a new column email in the table
+
+CREATE PROC ADDCOL(@TN VARCHAR(20))
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+END
+
+EXEC ADDCOL 'CUSTOMERS'
+    
