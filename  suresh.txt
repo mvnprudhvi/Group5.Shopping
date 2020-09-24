@@ -1,7 +1,0 @@
-- values inserted 
-select * from Branch 
---BRCODE	BRNAME
---10	HYD
---20	US
---30	UK
---40	NZ
