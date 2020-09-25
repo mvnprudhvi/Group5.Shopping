@@ -1,3 +1,5 @@
+
+--7)To calc shop wise total items,no.of customers?
 SELECT DISTINCT(Sid),COUNT(DISTINCT itno) AS TOTITEMS,
  COUNT(DISTINCT Cid) AS TOTCUSTOMERS
  FROM  Customers GROUP BY Sid,Cid 

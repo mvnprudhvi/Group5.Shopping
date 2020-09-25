@@ -1,6 +1,21 @@
 
+--1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED BY ATLEAST ONE CUSTOMER
+SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
+
+--2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
+SELECT * FROM Items CROSS JOIN Shop , Customers
+
+
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table--
 select *from Items where itno=(select Sid,Cid from Shops,Customers where(Customers.itno=Items.itno))
 
-----4)list 'c','r' type details whose price is above 500--
+----4)list 'c','r' type details whose price is above 500----
 select * from Items where Type ='c' or Type='r' and Fees > 500
+
+--8)Add the new column ‘email’ into Customers table using dynamic query procedure?---
+  create proc at(@tn as varchar(10))
+  as 
+  begin
+  exec('alter table' +@tn+' add email varchar(20)')
+  end
+  exec at 'Customers'
