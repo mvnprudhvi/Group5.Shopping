@@ -1,2 +1,28 @@
 
-create table    
+create table items(itno int primary key,itname varchar(10) not null,type char(1),fees smallmoney Not Null)  
+insert into  items values(2,'p','x',10),(3,'q' ,'y',20) 
+insert into items values(3,'y','z',20),(4,'l','k',70)
+select * from items
+
+create table shops(sid int primary key,sname varchar(10), loc varchar(10) not null)
+insert into shops values(1,'s','kp'),(2,'k','hsp')
+select * from shops
+
+
+
+create table customers(cid int primary key,itno int foreign key references items(itno),sid int foreign key references shops(sid), cname varchar(10) not null)
+insert into customers values(1,2,3,'k'),(2,4,6,'p')
+select * from customers
+
+
+
+--Adding a new column email in the customer table
+
+CREATE PROC ADDCOL(@TN VARCHAR(20))
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+END
+
+EXEC ADDCOL CUSTOMERS
+    
