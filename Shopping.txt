@@ -1,0 +1,25 @@
+ create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fee smallmoney Not Null)
+insert into Items values(101 , 'Nuts','n' ,500),
+                        (102 , 'Rice','r' ,1000),
+						(103 , 'Cosmotics','c',1500),
+						(104 , 'Others','o',2000)
+
+create table Shops(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
+insert into Shops values(1,'SH1','Hyderabad'),
+                        (2,'SH2','Warangal'),
+						(3,'SH3','Warangal'),
+						(4,'SH4','Hyderabad')
+						
+
+create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shops(Sid),Cname varchar(10))
+insert into Customers values(10,101,1,'PRUDHVI'),
+                            (20,101,1,'KEERTHANA'),
+							(30,102,2,'MADHUMITHA'),
+							(40,102,2,'RESHMA'),
+							(50,103,3,'DHINESH'),
+							(60,103,4,'ASHRITHA'),
+							(70,104,4,'SURESH')
+select * from Shops
+select * from Items
+select * from Customers
+
