@@ -1,1 +1,3 @@
-Select count(sid) from Shops
+SELECT DISTINCT(Sid),COUNT(DISTINCT itno) AS TOTITEMS,
+ COUNT(DISTINCT Cid) AS TOTCUSTOMERS
+ FROM  Customers GROUP BY Sid,Cid 
