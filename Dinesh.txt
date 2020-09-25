@@ -1,1 +1,1 @@
-Select * from Items
+Select count(sid) from Shops

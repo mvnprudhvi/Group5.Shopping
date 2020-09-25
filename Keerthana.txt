@@ -1,0 +1,1 @@
+ create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check Type in ('n','r','c','o'),Fee smallmoney Not Null)
