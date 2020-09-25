@@ -1,0 +1,6 @@
+
+---3)List all items details with shopid cid details ,if the item id match customers ,items table--
+select *from Items where itno=(select Sid,Cid from Shops,Customers where(Customers.itno=Items.itno))
+
+----4)list 'c','r' type details whose price is above 500--
+select * from Items where Type ='c' or Type='r' and Fees > 500

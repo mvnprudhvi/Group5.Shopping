@@ -1,3 +1,0 @@
-create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check
-Type in (&#39;n&#39;,&#39;r&#39;,&#39;c&#39;,&#39;o&#39;),Fee smallmoney Not Null)
-select * from Items
