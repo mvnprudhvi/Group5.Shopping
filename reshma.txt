@@ -13,13 +13,16 @@ select * from shops
 create table customers(cid int primary key,itno int foreign key references items(itno),sid int foreign key references shops(sid), cname varchar(10) not null)
 insert into customers values(1,2,3,'k'),(2,4,6,'p')
 select * from customers
+
+
+
 --Adding a new column email in the customer table
 
 CREATE PROC ADDCOL(@TN VARCHAR(20))
 AS
 BEGIN
-  EXEC ('ALTER TABLE '+@TN+' AlTER EMAIL VARCHAR(20)')
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
 END
 
-EXEC ADDCOL 'CUSTOMERS'
+EXEC ADDCOL CUSTOMERS
     
