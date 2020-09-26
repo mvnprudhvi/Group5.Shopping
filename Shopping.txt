@@ -1,1 +1,0 @@
-create table Shops(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)

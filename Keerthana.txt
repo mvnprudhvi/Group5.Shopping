@@ -7,15 +7,28 @@ SELECT * FROM Items CROSS JOIN Shop , Customers
 
 
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table--
-select *from Items where itno=(select Sid,Cid from Shops,Customers where(Customers.itno=Items.itno))
+select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
 
 ----4)list 'c','r' type details whose price is above 500----
 select * from Items where Type ='c' or Type='r' and Fees > 500
 
---8)Add the new column ‘email’ into Customers table using dynamic query procedure?---
-  create proc at(@tn as varchar(10))
+------5)Make a cursor to get all item details.------
+DECLARE @S1 INT,@S2 VARCHAR(13),@S3 CHAR(1),@S4 smallmoney
+DECLARE C1 CURSOR FOR SELECT * FROM Items
+OPEN C1
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4---START THE LOOP
+WHILE (@@FETCH_STATUS=0)
+BEGIN
+PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+' '+@S4
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
+END
+CLOSE C1
+DEALLOCATE C1
+
+----8)Add the new column ‘email’ into Customers table using dynamic query procedure?---
+  create proc at(@tn  varchar(10))
   as 
   begin
   exec('alter table' +@tn+' add email varchar(20)')
   end
-  exec at 'Customers'
+  exec at Customers
