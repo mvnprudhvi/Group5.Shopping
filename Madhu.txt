@@ -24,20 +24,27 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 select * from Shops
 select * from Items
 select * from Customers
---1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
-SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS2  WHERE ITNO=I.ITNO)
---2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
-SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS2
 
----3)List all items details with shopid cid details ,if the item id match customers ,items table--
-select *from Items where itno=(select Sid,Cid from Shops,Customers where(Customers.itno=Items.itno))
+--1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
+SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS  WHERE ITNO=I.ITNO)
+
+--2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
+SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS
+
+---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers c where i.itno=c.itno
+----(or)-----
+select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
+
 ----4)list 'c','r' type details whose price is above 500----
 select * from Items where Type ='c' or Type='r' and Fees > 500
+--(OR)-----
+select * from Items where Type IN('c','r') and  Fees >500
 
 --5)Make a cursor to get all item details.
 DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
 DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
-OPEN C1
+OPEN 
 FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
 WHILE (@@FETCH_STATUS=0)
 BEGIN
@@ -47,7 +54,7 @@ END
 CLOSE C1
 DEALLOCATE C1
 
---7)To calc shop wise total items,no.of customers?
+ --7)To calc shop wise total items,no.of customers?
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 --8)Adding a new column email in the customer table
@@ -58,17 +65,19 @@ BEGIN
   EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
 END
 
-EXEC ADDCOL CUSTOMERS
+  EXEC ADDCOL CUSTOMERS
+   select * from customers
 
 --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
---UNION
 SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
---UNION ALL
+--write a query for itno from customers,itno from items?
 SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
---INSERECT
+--write a query for itno from customers,itno from items?
 SELECT ITNO FROM CUSTOMERS INTERSECT SELECT ITNO FROM ITEMS
---EXCEPT
+--write a query for cname from customers,itname from items?
 SELECT CNAME FROM CUSTOMERS EXCEPT SELECT ITNAME FROM  ITEMS
+
+
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE?
 CREATE VIEW CS AS SELECT CUSTOMERS.CID,SHOPS.SID FROM CUSTOMERS,SHOPS WHERE CUSTOMERS.SID=SHOPS.SID
 SELECT * FROM CS
