@@ -28,6 +28,7 @@ select * from Customers
 SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS2  WHERE ITNO=I.ITNO)
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
 SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS2
+
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table--
 select *from Items where itno=(select Sid,Cid from Shops,Customers where(Customers.itno=Items.itno))
 ----4)list 'c','r' type details whose price is above 500----
