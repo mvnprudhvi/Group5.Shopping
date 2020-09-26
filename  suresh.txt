@@ -42,7 +42,7 @@ select * from Items where Type IN('c','r') and  Fees >500
 
 
 --5)Make a cursor to get all item details.
-DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 INT
+DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
 DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
 OPEN C1
 FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
