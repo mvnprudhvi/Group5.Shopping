@@ -34,6 +34,35 @@ select *from Items where itno=(select Sid,Cid from Shops,Customers where(Custome
 ----4)list 'c','r' type details whose price is above 500----
 select * from Items where Type ='c' or Type='r' and Fees > 500
 
+
+--5)Make a cursor to get all item details.
+DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
+DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
+OPEN C1
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
+WHILE (@@FETCH_STATUS=0)
+BEGIN
+PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+'   '+ CAST (@S4 AS VARCHAR)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
+END
+CLOSE C1
+DEALLOCATE C1
+
+--7)To calc shop wise total items,no.of customers?
+select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
+
+--8)Adding a new column email in the customer table
+
+CREATE PROC ADDCOL(@TN VARCHAR(20))
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+END
+
+EXEC ADDCOL CUSTOMERS
+
+
+
 --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
 --UNION
 SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
