@@ -1,18 +1,19 @@
- 
+ ----Shopping DataBase--
+----Table Creation-----
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
 insert into Items values(101 , 'Nuts','n' ,500),
                         (102 , 'Rice','r' ,1000),
 						(103 , 'Cosmotics','c',1500),
 						(104 , 'Others','o',2000)
 
-create table Shops(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
-insert into Shops values(1,'SH1','Hyderabad'),
+create table Shop(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
+insert into Shop values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
 						
 
-create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shops(Sid),Cname varchar(10))
+create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shop(Sid),Cname varchar(10))
 insert into Customers values(10,101,1,'PRUDHVI'),
                             (20,101,1,'KEERTHANA'),
 							(30,102,2,'MADHUMITHA'),
@@ -20,6 +21,69 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
-select * from Shops
+select * from Shop
 select * from Items
 select * from Customers
+
+
+--1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED BY ATLEAST ONE CUSTOMER
+SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
+
+--2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
+SELECT * FROM Items CROSS JOIN Shop , Customers
+
+
+---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
+----(or)-----
+select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
+
+----4)list 'c','r' type details whose Fees is above 500----
+
+select * from Items where Type ='c' or Type='r' and Fees > 500
+--(OR)-----
+select * from Items where Type IN('c','r') and  Fees >500
+
+----5)Make a cursor to get all item details.------
+
+DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
+DECLARE C1 CURSOR FOR SELECT * FROM Items
+OPEN C1
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4------START THE LOOP
+WHILE (@@FETCH_STATUS=0)
+BEGIN
+PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+' '+@S4
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
+END
+CLOSE C1
+DEALLOCATE C1
+
+---7)To calc shop wise total items,no.of customers ?----
+
+select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
+
+
+
+-----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
+
+  create proc EC(@t varchar(10))
+  as 
+  begin
+  exec('alter table' +@t+'add email varchar(20)')
+  end
+  exec EC Customers
+
+
+  ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
+select * from Customers UNION select * from Items
+select * from Customers UNION ALL select * from Items
+select * from Customers INTERSECT select * from Items
+select * from Customers EXCEPT select * from Items
+
+--10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
+
+alter VIEW Customers_Shops_VIEW 
+AS SELECT  Customers.Cname,  Shops.Sname
+FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
+
+select * from Customers_Shops_VIEW 
