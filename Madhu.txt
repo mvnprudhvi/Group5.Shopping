@@ -34,7 +34,6 @@ select *from Items where itno=(select Sid,Cid from Shops,Customers where(Custome
 ----4)list 'c','r' type details whose price is above 500----
 select * from Items where Type ='c' or Type='r' and Fees > 500
 
-
 --5)Make a cursor to get all item details.
 DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
 DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
@@ -60,8 +59,6 @@ BEGIN
 END
 
 EXEC ADDCOL CUSTOMERS
-
-
 
 --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
 --UNION
