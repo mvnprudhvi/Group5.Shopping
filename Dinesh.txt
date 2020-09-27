@@ -32,10 +32,12 @@ SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
 SELECT * FROM Items CROSS JOIN Shop , Customers
 
 
---3)List all items details with shopid cid details ,if the item id match customers ,items table?
+--3)List all items details with shopid cid details,
+ --if the item id match customers ,items table?
 select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
                                  --(or)
-select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
+select i.*, c.cid,s.Sid   from Items i inner join  
+Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
 
 
 --4)list 'c','r' type details whose Fees is above 500?
@@ -44,7 +46,7 @@ select * from Items where Type ='c' or Type='r' and Fees>500
 select * from Items where Type IN('c','r') and  Fees>500
 
 
---5)Make a cursor to get all item details.------
+--5)Make a cursor to get all item details?
 DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
 DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
@@ -58,8 +60,28 @@ CLOSE C1
 DEALLOCATE C1
 
 
+--6) Create trigger if the items is added into items table other than ‘n’[nuts]?
+CREATE TRIGGER tr1
+ON ITEMS
+instead of insert
+AS
+BEGIN
+declare @it varchar(20)
+select @it=itname from inserted
+  If @it!='Nuts'   
+  BEGIN
+    ROLLBACK
+    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
+  END
+  end
+
+ -- insert into items values(106,'coco','c',500)
+ --insert into items values(106,'NUTS','N',500)
+
+
 --7)To calc shop wise total items,no.of customers?
-select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
+Select Sid ,COUNT(DISTINCT itno) As TotItems,
+COUNT(cid) As NoOfCustomers from Customers group by Sid
 
 
 --8)Add the new column ‘email’ into Customers table using dynamic query procedure?
