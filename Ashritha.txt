@@ -26,3 +26,54 @@ select * from Customers
 SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS2  WHERE ITNO=I.ITNO)
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
 SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS2
+---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers2 c where i.itno=c.itno
+----(or)-----
+select i.*, c.cid,s.Sid   from Items i inner join  Customers2 c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
+
+----4)list 'c','r' type details whose Fees is above 500----
+
+select * from Items where Type ='c' or Type='r' and Fees > 500
+--(OR)-----
+select * from Items where Type IN('c','r') and  Fees >500
+
+----5)Make a cursor to get all item details.------
+DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
+DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
+OPEN C1
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
+WHILE (@@FETCH_STATUS=0)
+BEGIN
+PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+'   '+ CAST (@S4 AS VARCHAR)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
+END
+CLOSE C1
+DEALLOCATE C1
+
+---7)To calc shop wise total items,no.of customers ?----
+
+select Sid Shops,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers2 group by Sid
+
+
+-----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
+
+  create proc at(@t varchar(10))
+  as 
+  begin
+  exec('alter table' +@t+'add email varchar(20)')
+  end
+  exec at customers2
+  select * from customers2
+
+--9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
+--UNION
+SELECT ITNO FROM CUSTOMERS2 UNION SELECT ITNO FROM ITEMS
+--UNION ALL
+SELECT ITNO FROM CUSTOMERS2 UNION ALL SELECT ITNO FROM ITEMS
+--INSERECT
+SELECT ITNO FROM CUSTOMERS2 INTERSECT SELECT ITNO FROM ITEMS
+--EXCEPT
+SELECT CNAME FROM CUSTOMERS2 EXCEPT SELECT ITNAME FROM  ITEMS
+--10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE?
+CREATE VIEW CS AS SELECT CUSTOMERS2.CID,SHOPS.SID FROM CUSTOMERS2,SHOPS WHERE CUSTOMERS2.SID=SHOPS.SID
+SELECT * FROM CS
