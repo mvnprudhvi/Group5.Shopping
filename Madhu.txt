@@ -26,17 +26,18 @@ select * from Items
 select * from Customers
 
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
-SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS  WHERE ITNO=I.ITNO)
+select * from items i where exists(select 1 from customers where itno=i.ino)
+
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
-SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS
+select * from items cross join shops,customers
 
----3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+--3)LIST ALL ITEMS DETAILS WITH SHOPID CID DETAILS ,IF THE ITEM ID MATCH CUSTOMERS,ITEMS TABLE
 select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers c where i.itno=c.itno
 ----(or)-----
 select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
 
-----4)list 'c','r' type details whose price is above 500----
+--4)LIST 'C','R' TYPE DETAILS WHOSE PRICE IS ABOVE 500
 select * from Items where Type ='c' or Type='r' and Fees > 500
 --(OR)-----
 select * from Items where Type IN('c','r') and  Fees >500
