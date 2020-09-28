@@ -22,10 +22,10 @@ insert into Customers2 values(10,101,1,'PRUDHVI'),
 select * from Shops
 select * from Items
 select * from Customers
---1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
-SELECT * FROM ITEMS I WHERE EXISTS(SELECT 1 FROM CUSTOMERS2  WHERE ITNO=I.ITNO)
---2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
-SELECT * FROM ITEMS CROSS JOIN SHOPS CROSS JOIN CUSTOMERS2
+--1)List the item details whi9ch item is selected atleast one customer
+Select * from items i where exists(select 1 from customers2 where itno=i.itno)
+--2)List the items,customers2,shops details with cross product
+select * from items cross join shops,customers2
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
 select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers2 c where i.itno=c.itno
 ----(or)-----
@@ -49,6 +49,23 @@ FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
+--6) Create trigger if the items is added into items table other than ‘n’[nuts]?
+CREATE TRIGGER tr1
+ON ITEMS
+instead of insert
+AS
+BEGIN
+declare @it varchar(20)
+select @it=itname from inserted
+  If @it!='Nuts'   
+  BEGIN
+    ROLLBACK
+    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
+  END
+  end
+
+ insert into items values(106,'coco','c',500)
+ insert into items values(106,'NUTS','N',500)
 
 ---7)To calc shop wise total items,no.of customers ?----
 
