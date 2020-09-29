@@ -22,7 +22,7 @@ insert into Customers2 values(10,101,1,'PRUDHVI'),
 select * from Shops
 select * from Items
 select * from Customers
---1)List the item details whi9ch item is selected atleast one customer
+--1)List the item details which item is selected atleast one customer
 Select * from items i where exists(select 1 from customers2 where itno=i.itno)
 --2)List the items,customers2,shops details with cross product
 select * from items cross join shops,customers2
