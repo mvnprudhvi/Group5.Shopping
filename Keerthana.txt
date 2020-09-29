@@ -1,17 +1,28 @@
 ----Shopping DataBase--
 ----Table Creation-----
+--Items table-itno as primary key is a constraint: means it should be unique and doesn't allow duplicates--
+---itname-is a NOTNULL Constraint--it should not be null--
+--Type-is a check constraint and we are checking the type usinh IN  Special operator only particular tpes are allowed
+--Fees -is a NOTNULL constraint..here smallmoney is a datatype
+
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
 insert into Items values(101 , 'Nuts','n' ,500),
                         (102 , 'Rice','r' ,1000),
 						(103 , 'Cosmotics','c',1500),
 						(104 , 'Others','o',2000)
 
+--Shop table-Sid as primary key is a constraint: means it should be unique and doesn't allow duplicates--
+---Sname-is a NOTNULL Constraint--it should not be null--
+---Location --is NOTNULL constraint i.e.,it should not be null-
 create table Shop(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
 insert into Shop values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
-						
+	
+--Customers table-Cid as primary key is a constraint: means it should be unique and doesn't allow duplicates--
+---itno-is a foreign key  Constraint--References values from Items Table(itno)-Foreign key can have duplicates
+--Sid-is a foreign key  Constraint--References values from Shop Table(Sid)--it allows duplicates
 
 create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shop(Sid),Cname varchar(10))
 insert into Customers values(10,101,1,'PRUDHVI'),
@@ -21,28 +32,49 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
+_________________________________________________________________________________________________________________________________________________
+
+----Here ,'*' indiactes returns all records from Respective Table
+
 select * from Shop
 select * from Items
 select * from Customers
 
+________________________________________________________________________________________________________________________________________________
 
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED BY ATLEAST ONE CUSTOMER
+----The EXISTS operator is used to test for the existence of any record in a subquery.
+---The EXISTS operator returns true if the subquery returns one or more records.
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
+(OR)
+--The ANY Operator is used with  WHERE or HAVING clause. The ANY operator returns true if any of the subquery values meet the condition
+select * from Items  where itno >ANY (select itno from Items I,Customers C  where I.itno=C.itno)
+________________________________________________________________________________________________________________________________________________
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
-SELECT * FROM Items CROSS JOIN Shop , Customers
 
+--CROSS JOIN is used to combine each row of the first table with each row of the second table. 
+It is also known as the Cartesian join since it returns the Cartesian product of the sets of rows from the joined tables.
+
+SELECT * FROM Items CROSS JOIN Shop , Customers
+_______________________________________________________________________________________________________________________________________________
 
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+----To get the total Items table details including ShopId,CustomerId,first it should match with  itno in both Customers and Items table
 select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
 ----(or)-----
+---INNER JOIN returns matching records from 2 or more tables
 select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
+_________________________________________________________________________________________________________________________________________
 
 ----4)list 'c','r' type details whose Fees is above 500----
-
+---OR operator returns records either any one is true.
+--AND operator returns records if both the conditions are true.
 select * from Items where Type ='c' or Type='r' and Fees > 500
 --(OR)-----
+IN OPTYPE returns only particular condition matching records.Here ,it checks Type using IN
 select * from Items where Type IN('c','r') and  Fees >500
+___________________________________________________________________________________________________________________________________
 
 ----5)Make a cursor to get all item details.------
 
@@ -57,6 +89,29 @@ FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
+
+--6) Create trigger if the items is added into items table other than ‘n’[nuts]?
+
+CREATE TRIGGER tr1
+ON ITEMS
+instead of insert
+AS
+BEGIN
+declare @it varchar(20)
+select @it=itname from inserted
+  If @it!='Nuts'   
+  BEGIN
+    ROLLBACK
+    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
+  END
+  END
+
+
+  insert into items values(106,'coco','c',500)
+  insert into items values(107,'rice','r',1100)
+ insert into items values(106,'NUTS','N',500)
+
+
 
 ---7)To calc shop wise total items,no.of customers ?----
 
