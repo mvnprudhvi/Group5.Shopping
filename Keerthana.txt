@@ -1,4 +1,6 @@
-----Shopping DataBase--
+------------KEERTHANA---------
+_______________________________SHOPPING DATABASE__________________________
+
 ----Table Creation-----
 --Items table-itno as primary key is a constraint: means it should be unique and doesn't allow duplicates--
 ---itname-is a NOTNULL Constraint--it should not be null--
@@ -32,9 +34,7 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
-_________________________________________________________________________________________________________________________________________________
 
-----Here ,'*' indiactes returns all records from Respective Table
 
 select * from Shop
 select * from Items
@@ -77,7 +77,7 @@ select * from Items where Type IN('c','r') and  Fees >500
 ___________________________________________________________________________________________________________________________________
 
 ----5)Make a cursor to get all item details.------
-
+--declarion of CURSOR--
 DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
 DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
@@ -89,9 +89,10 @@ FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
-
+____________________________________________________________________________________________________________________________________________
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 
+---creation of TRIGGER
 CREATE TRIGGER tr1
 ON ITEMS
 instead of insert
@@ -106,39 +107,42 @@ select @it=itname from inserted
   END
   END
 
-
+  -----Inserting Records into Ttems table--
   insert into items values(106,'coco','c',500)
   insert into items values(107,'rice','r',1100)
  insert into items values(106,'NUTS','N',500)
 
-
+ ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
 
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
-
+________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
-
+--creation  OF PROCEDURE
   create proc EC(@t varchar(10))
   as 
   begin
   exec('alter table' +@t+'add email varchar(20)')
   end
   exec EC Customers
-
+ ________________________________________________________________________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
 select * from Customers UNION select * from Items
 select * from Customers UNION ALL select * from Items
 select * from Customers INTERSECT select * from Items
 select * from Customers EXCEPT select * from Items
-
+__________________________________________________________________________________________________________________________________________
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
+--complex view is created based on 2 or more base tables
+creation of VIEW
 
 alter VIEW Customers_Shops_VIEW 
 AS SELECT  Customers.Cname,  Shops.Sname
 FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
 
 select * from Customers_Shops_VIEW 
+_____________________________________________________________________________________________________________________________________________
