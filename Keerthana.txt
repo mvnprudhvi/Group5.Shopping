@@ -101,34 +101,41 @@ select @it=itname from inserted
  ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
-
+---count(*)-total number of records
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 ________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
---creation  OF PROCEDURE
-  create proc EC(@t varchar(10))
-  as 
-  begin
-  exec('alter table' +@t+'add email varchar(20)')
-  end
-  exec EC Customers
+--creation  of PROCEDURE
+ alter PROC ADDCOL(@TN VARCHAR(20))
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+END
+
+EXEC ADDCOL Customers
+select * from customers
  ________________________________________________________________________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
-select * from Customers UNION select * from Items
-select * from Customers UNION ALL select * from Items
-select * from Customers INTERSECT select * from Items
-select * from Customers EXCEPT select * from Items
+--UNION
+SELECT itno FROM CUSTOMERS UNION SELECT itno FROM ITEMS
+--UNION ALL
+SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
+--INSERECT
+SELECT ITNO FROM CUSTOMERS INTERSECT SELECT ITNO FROM ITEMS
+--EXCEPT
+SELECT CNAME FROM CUSTOMERS EXCEPT SELECT ITNAME FROM  ITEMS
 __________________________________________________________________________________________________________________________________________
+
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 --complex view is created based on 2 or more base tables
 ---creation of VIEW
 
-alter VIEW Customers_Shops_VIEW 
-AS SELECT  Customers.Cname,  Shops.Sname
-FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
+alter VIEW Customers_Shop_VIEW 
+AS SELECT  Customers.Cname,  Shop.Sname
+FROM Customers, Shop WHERE Customers.Sid=Shop.Sid
 
-select * from Customers_Shops_VIEW 
+select * from Customers_Shop_VIEW 
 _____________________________________________________________________________________________________________________________________________

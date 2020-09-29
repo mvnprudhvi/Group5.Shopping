@@ -86,14 +86,15 @@ select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group 
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
 
-create table items(sno int)
+create table customers(sno int)
 go
-create proc nc(@tablename varchar(20),@colname varchar(20),@datatype varchar(20))
+create proc col1(@tablename varchar(20),@colname varchar(20),@datatype varchar(20))
 as begin
 	exec ('alter table '+@tablename+' add '+@colname+' '+@datatype)
-	select * from Items
+	select * from customers
 end
 
+exec col1 'cutomers' , 'email','varchar
   --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
 --UNION
 SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
