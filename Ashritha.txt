@@ -22,50 +22,53 @@ insert into Customers2 values(10,101,1,'PRUDHVI'),
 select * from Shops
 select * from Items
 select * from Customers
---1)List the item details whi9ch item is selected atleast one customer
+--1)List the item details which item is selected atleast one customer
+--outer query:select all the item details 
+--inner query :selects customers who selected items.Here 1 means a literal value which checks something exixts or not
 Select * from items i where exists(select 1 from customers2 where itno=i.itno)
 --2)List the items,customers2,shops details with cross product
-select * from items cross join shops,customers2
----3)List all items details with shopid cid details ,if the item id match customers ,items table-----
+select * from items cross join shops,customers2-- all tables joining with cross product
+---3)List all items details with shopid cid details ,if the item id match customers ,items table
+--here all item details with shop id and customer id are selected based on matching columns in items and customers
 select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers2 c where i.itno=c.itno
 ----(or)-----
 select i.*, c.cid,s.Sid   from Items i inner join  Customers2 c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
 
-----4)list 'c','r' type details whose Fees is above 500----
-
+----4)list 'c','r' type details whose Fees is above 500
+--only c and r type details are selected whose fees is above 500.we can use or else we can use in operator also
 select * from Items where Type ='c' or Type='r' and Fees > 500
 --(OR)-----
 select * from Items where Type IN('c','r') and  Fees >500
 
 ----5)Make a cursor to get all item details.------
-DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
+DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY--declare the variables of item details
 DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
 OPEN C1
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
-WHILE (@@FETCH_STATUS=0)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP--this fetch stmt is for initialization or first record
+WHILE (@@FETCH_STATUS=0)--here fetch_status=0 it means we have records 
 BEGIN
 PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+'   '+ CAST (@S4 AS VARCHAR)
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP and increment to the next values
 END
 CLOSE C1
 DEALLOCATE C1
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 CREATE TRIGGER tr1
 ON ITEMS
-After insert
+After insert--here after means after the work of dml
 AS
 BEGIN
 declare @it varchar(20)
 select @it=itname from inserted
-  If @it!='Nuts'   
+  If @it!='Nuts' --other than nuts any one of the items should not be inserted 
   BEGIN
     ROLLBACK
     RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
   END
   end
 
- insert into items values(106,'coco','c',500)
- insert into items values(106,'NUTS','N',500)
+ insert into items values(106,'coco','c',500)--while we try to insert error will be raised 
+ insert into items values(106,'NUTS','N',500)--it will insert
 
 ---7)To calc shop wise total items,no.of customers ?----
 
@@ -84,13 +87,14 @@ select Sid Shops,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers2 grou
 
 --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
 --UNION
-SELECT ITNO FROM CUSTOMERS2 UNION SELECT ITNO FROM ITEMS
+SELECT ITNO FROM CUSTOMERS2 UNION SELECT ITNO FROM ITEMS--without duplicates gives the records
 --UNION ALL
-SELECT ITNO FROM CUSTOMERS2 UNION ALL SELECT ITNO FROM ITEMS
+SELECT ITNO FROM CUSTOMERS2 UNION ALL SELECT ITNO FROM ITEMS--with duplicates gives the records
 --INSERECT
-SELECT ITNO FROM CUSTOMERS2 INTERSECT SELECT ITNO FROM ITEMS
+SELECT ITNO FROM CUSTOMERS2 INTERSECT SELECT ITNO FROM ITEMS--it gives unique values from both tables
 --EXCEPT
-SELECT CNAME FROM CUSTOMERS2 EXCEPT SELECT ITNAME FROM  ITEMS
+SELECT CNAME FROM CUSTOMERS2 EXCEPT SELECT ITNAME FROM  ITEMS--details of first table 
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE?
+--creating complex view on two tables based on matching columns
 CREATE VIEW CS AS SELECT CUSTOMERS2.CID,SHOPS.SID FROM CUSTOMERS2,SHOPS WHERE CUSTOMERS2.SID=SHOPS.SID
 SELECT * FROM CS
