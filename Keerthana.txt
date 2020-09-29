@@ -75,7 +75,7 @@ FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
-____________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 
 ---creation of TRIGGER
