@@ -1,19 +1,19 @@
-USE model
+----Shopping DataBase--
+----Table Creation-----
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
-insert into Items values(101 , 'Nuts','n' ,500)
- insert into Items values (102 , 'Rice','r' ,100)
-  insert into Items values (103 , 'Cosmotics','c',1500)
-insert into Items values(104 , 'Others','o',2000)
-select* from items
+insert into Items values(101 , 'Nuts','n' ,500),
+                        (102 , 'Rice','r' ,1000),
+						(103 , 'Cosmotics','c',1500),
+						(104 , 'Others','o',2000)
 
-create table Shops(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
-insert into Shops values(1,'SH1','Hyderabad'),
+create table Shop(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
+insert into Shop values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
 						
 
-create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shops(Sid),Cname varchar(10))
+create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shop(Sid),Cname varchar(10))
 insert into Customers values(10,101,1,'PRUDHVI'),
                             (20,101,1,'KEERTHANA'),
 							(30,102,2,'MADHUMITHA'),
@@ -21,7 +21,11 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
-							
+select *  from Shop
+select * from Items
+select * from Customers
+
+
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED BY ATLEAST ONE CUSTOMER
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
 
@@ -40,39 +44,19 @@ select * from Items where Type ='c' or Type='r' and Fees > 500
 --(OR)-----
 select * from Items where Type IN('c','r') and  Fees >500
 
+----5)Make a cursor to get all item details.------
 
---5)Make a cursor to get all item details.
-DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
-DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
+DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
+DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4------START THE LOOP
 WHILE (@@FETCH_STATUS=0)
 BEGIN
-PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+'   '+ CAST (@S4 AS VARCHAR)
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 --CONTINUE THE LOOP
+PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+' '+cast(@s4 as varchar)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
---6) Create trigger if the items is added into items table other than ‘n’[nuts]?
-CREATE TRIGGER tr1
-ON ITEMS
-instead of insert
-AS
-BEGIN
-declare @it varchar(20)
-select @it=itname from inserted
-  If @it!='Nuts'   
-  BEGIN
-    ROLLBACK
-    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
-  END
-  end
-
- -- insert into items values(106,'coco','c',500)
- --insert into items values(106,'NUTS','N',500)
-
-
-
 
 ---7)To calc shop wise total items,no.of customers ?----
 
@@ -82,30 +66,30 @@ select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group 
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
 
-  create proc EC(@t varchar(10))
-  as 
-  begin
-  exec('alter table' +@t+'add email varchar(20)')
-  end
-  exec EC Customers
+create table items(sno int)
+go
+create proc nc(@tablename varchar(20),@colname varchar(20),@datatype varchar(20))
+as begin
+	exec ('alter table '+@tablename+' add '+@colname+' '+@datatype)
+	select * from Items
+end
 
-  --9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE?
---UNION
-SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
---UNION ALL
-SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
---INSERECT
-SELECT ITNO FROM CUSTOMERS INTERSECT SELECT ITNO FROM ITEMS
---EXCEPT
-SELECT CNAME FROM CUSTOMERS EXCEPT SELECT ITNAME FROM  ITEMS
---10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE?
-CREATE VIEW CS AS SELECT CUSTOMERS.CID,SHOPS.SID FROM CUSTOMERS,SHOPS WHERE CUSTOMERS.SID=SHOPS.SID
-SELECT * FROM CS
+exec nc 'items' , 'email','varchar'
 
 
 
 
 
+  ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
+select * from Customers UNION select * from Items
+select * from Customers UNION ALL select * from Items
+select * from Customers INTERSECT select * from Items
+select * from Customers EXCEPT select * from Items
 
+--10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 
+alter VIEW Customers_Shops_VIEW 
+AS SELECT  Customers.Cname,  Shops.Sname
+FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
 
+select * from Customers_Shops_VIEW 
