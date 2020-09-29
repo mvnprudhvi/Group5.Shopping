@@ -60,9 +60,7 @@ SELECT * FROM Items CROSS JOIN Shop , Customers
 _______________________________________________________________________________________________________________________________________________
 
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
-----To get the total Items table details including ShopId,CustomerId,first it should match with  itno in both Customers and Items table
-select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
-----(or)-----
+
 ---INNER JOIN returns matching records from 2 or more tables
 select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
 _________________________________________________________________________________________________________________________________________
