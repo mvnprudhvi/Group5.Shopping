@@ -138,7 +138,7 @@ select * from Customers EXCEPT select * from Items
 __________________________________________________________________________________________________________________________________________
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 --complex view is created based on 2 or more base tables
-creation of VIEW
+---creation of VIEW
 
 alter VIEW Customers_Shops_VIEW 
 AS SELECT  Customers.Cname,  Shops.Sname
