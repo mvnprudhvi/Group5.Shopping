@@ -119,7 +119,7 @@ ________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
 
- alter PROC ADDCOL(@TN VARCHAR(20))              ---CREATED A PROCEDURE NAMED  ADDCOL
+ alter PROC ADDCOL(@TN VARCHAR(20))              ---MOIFYING THE PROCEDURE NAMED ADDCOL
 AS
 BEGIN
   EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')  
