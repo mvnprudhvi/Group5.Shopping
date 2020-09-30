@@ -61,7 +61,7 @@ DEALLOCATE C1
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 CREATE TRIGGER tr1
 ON ITEMS
-instead of insert
+after insert
 AS
 BEGIN
 declare @it varchar(20)
