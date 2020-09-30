@@ -117,11 +117,16 @@ ________________________________________________________________________________
  ________________________________________________________________________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
-select * from Customers UNION select * from Items
-select * from Customers UNION ALL select * from Items
-select * from Customers INTERSECT select * from Items
-select * from Customers EXCEPT select * from Items
+--UNION
+SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
+--UNION ALL
+SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
+--INSERECT
+SELECT ITNO FROM CUSTOMERS INTERSECT SELECT ITNO FROM ITEMS
+--EXCEPT
+SELECT CNAME FROM CUSTOMERS EXCEPT SELECT ITNAME FROM  ITEMS
 __________________________________________________________________________________________________________________________________________
+
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 --complex view is created based on 2 or more base tables
 ---creation of VIEW
