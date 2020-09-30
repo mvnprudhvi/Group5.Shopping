@@ -91,7 +91,7 @@ select @it=itname from inserted         ---------inserting values into empbackup
                                                      that is inserted
   If @it!='Nuts'                        ---------Checks the condition whether itname is 'NUTS' (or) not
   BEGIN
-    ROLLBACK                                                    -----
+    ROLLBACK                                                   
     RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)        ------RAISEERROR is a predefined function
   END
   END
