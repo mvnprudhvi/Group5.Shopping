@@ -23,6 +23,11 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
 
+--To get the desciption of table
+sp_help 'tablename'
+--To get the information of table
+Select * from tablename
+
 
 select * from Shop
 select * from Items
@@ -99,6 +104,9 @@ select @it=itname from inserted
 
 ---7)To calc shop wise total items,no.of customers ?----
 ---count(*)-total number of records
+Select Sid ,COUNT(DISTINCT itno) As TotItems,
+COUNT(cid) As NoOfCustomers from Customers group by Sid
+--(OR)---
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 ________________________________________________________________________________________________________________________________________
