@@ -73,7 +73,7 @@ select @it=itname from inserted
   END
   end
 
- -- insert into items values(106,'coco','c',500)
+ insert into items values(106,'coco','c',500)
  --insert into items values(106,'NUTS','N',500)
 
 
