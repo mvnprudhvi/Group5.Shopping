@@ -1,19 +1,24 @@
 USE MADHU
- 
+--creating table based on below conditions
+--creating items table based on constraints like primary key,not null,check 
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
+--inserting values into items table
 insert into Items values(101 , 'Nuts','n' ,500),
                         (102 , 'Rice','r' ,1000),
 						(103 , 'Cosmotics','c',1500),
 						(104 , 'Others','o',2000)
 
+--creating  shops table based on constraints primary key, not null					
 create table Shops(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
+--inserting values into shops table
 insert into Shops values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
 						
-
+--creating  shops table based on constraints primary key,foreign key  
 create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shops(Sid),Cname varchar(10))
+--inserting values into customers table
 insert into Customers values(10,101,1,'PRUDHVI'),
                             (20,101,1,'KEERTHANA'),
 							(30,102,2,'MADHUMITHA'),
@@ -21,15 +26,21 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
+
+--retrieving data from shops table
 select * from Shops
+--retrieving data from items table
 select * from Items
+--retrieving data from customers table
 select * from Customers
 
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
+--listing items details which item isn selected atleast one customer by using subqueries
 select * from items i where exists(select 1 from customers where itno=i.ino)
 
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
+--listing all items,customers,shops details by using cross product
 select * from items cross join shops,customers
 
 --3)LIST ALL ITEMS DETAILS WITH SHOPID CID DETAILS ,IF THE ITEM ID MATCH CUSTOMERS,ITEMS TABLE
@@ -75,6 +86,7 @@ select @it=itname from inserted
 
 
  --7)To calc shop wise total items,no.of customers?
+
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 --8)Adding a new column email in the customer table
