@@ -69,11 +69,11 @@ ________________________________________________________________________________
 DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
 DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4------START THE LOOP
-WHILE (@@FETCH_STATUS=0)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4                      ------START THE LOOP
+WHILE (@@FETCH_STATUS=0)                                 ----IF FETCH OPEARTION IS SUCCESSFUL..REPEATS THE CONDITION MULTIPLE TIMES
 BEGIN
 PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+' '+@S4
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4                     -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
@@ -81,29 +81,37 @@ ________________________________________________________________________________
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 
 ---creation of TRIGGER
-CREATE TRIGGER tr1
+CREATE TRIGGER tr1                  --TRIGGER NAMED AS tr1 On Items Table
 ON ITEMS
-instead of insert
+instead of insert                  ---DML EVENT
 AS
 BEGIN
 declare @it varchar(20)
-select @it=itname from inserted
-  If @it!='Nuts'   
+select @it=itname from inserted         ---------inserting values into empbackup table and we can store that in virtual table 
+                                                     that is inserted
+  If @it!='Nuts'                        ---------Checks the condition whether itname is 'NUTS' (or) not
   BEGIN
-    ROLLBACK
-    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
+    ROLLBACK                                                    -----
+    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)        ------RAISEERROR is a predefined function
   END
   END
 
   -----Inserting Records into Ttems table--
-  insert into items values(106,'coco','c',500)
-  insert into items values(107,'rice','r',1100)
- insert into items values(106,'NUTS','N',500)
+  insert into items values(106,'coco','c',500)       ----CAN'T INSERT 'C' TYPE RECORDS
+  insert into items values(107,'rice','r',1100)      ----CAN'T INSERT 'R' TYPE RECORD
+ insert into items values(106,'NUTS','N',500)   -------RECORD INSERTED SUCCESSFULLY
+
+ --Desciption of trigger tr1
+sp_help 'tr1'
+
+--To get available triggers in database
+select name from sysobjects where xtype='tr'
 
  ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
----count(*)-total number of records
+---getting total items and total number of customers based on shopid using COUNT function
+
 Select Sid ,COUNT(DISTINCT itno) As TotItems,
 COUNT(cid) As NoOfCustomers from Customers group by Sid
 --(OR)---
@@ -112,18 +120,20 @@ select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group 
 ________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
---creation  of PROCEDURE
- alter PROC ADDCOL(@TN VARCHAR(20))
+
+ alter PROC ADDCOL(@TN VARCHAR(20))              ---CREATED A PROCEDURE NAMED  ADDCOL
 AS
 BEGIN
-  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')  
 END
 
-EXEC ADDCOL Customers
+EXEC ADDCOL Customers                          ---EMAIL column is added to the Customers Table
 select * from customers
  ________________________________________________________________________________________________________________________________________________
 
-  ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
+ ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
+ --getting all records using SET operators
+
 --UNION
 SELECT itno FROM CUSTOMERS UNION SELECT itno FROM ITEMS
 --UNION ALL
@@ -136,7 +146,7 @@ ________________________________________________________________________________
 
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 --complex view is created based on 2 or more base tables
----creation of VIEW
+---creation of VIEW on customers and shop tables
 
 alter VIEW Customers_Shop_VIEW 
 AS SELECT  Customers.Cname,  Shop.Sname
