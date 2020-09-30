@@ -118,7 +118,7 @@ ________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
 --UNION
-SELECT ITNO FROM CUSTOMERS UNION SELECT ITNO FROM ITEMS
+SELECT itno FROM CUSTOMERS UNION SELECT itno FROM ITEMS
 --UNION ALL
 SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
 --INSERECT
@@ -131,9 +131,9 @@ ________________________________________________________________________________
 --complex view is created based on 2 or more base tables
 ---creation of VIEW
 
-alter VIEW Customers_Shops_VIEW 
-AS SELECT  Customers.Cname,  Shops.Sname
-FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
+alter VIEW Customers_Shop_VIEW 
+AS SELECT  Customers.Cname,  Shop.Sname
+FROM Customers, Shop WHERE Customers.Sid=Shop.Sid
 
-select * from Customers_Shops_VIEW 
+select * from Customers_Shop_VIEW 
 _____________________________________________________________________________________________________________________________________________
