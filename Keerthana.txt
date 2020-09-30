@@ -108,12 +108,14 @@ ________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
 --creation  of PROCEDURE
-  create proc EC(@t varchar(10))
-  as 
-  begin
-  exec('alter table' +@t+'add email varchar(20)')
-  end
-  exec EC Customers
+ alter PROC ADDCOL(@TN VARCHAR(20))
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')
+END
+
+EXEC ADDCOL Customers
+select * from customers
  ________________________________________________________________________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
