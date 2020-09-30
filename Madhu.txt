@@ -35,7 +35,7 @@ select * from Items
 select * from Customers
 
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
---listing items details which item isn selected atleast one customer by using subqueries
+--listing items details which item isn selected atleast one customer by using nthqueries
 select * from items i where exists(select 1 from customers where itno=i.ino)
 
 
@@ -44,18 +44,22 @@ select * from items i where exists(select 1 from customers where itno=i.ino)
 select * from items cross join shops,customers
 
 --3)LIST ALL ITEMS DETAILS WITH SHOPID CID DETAILS ,IF THE ITEM ID MATCH CUSTOMERS,ITEMS TABLE
+--non ansi inner join
 select i.* ,s.Sid ,c.Cid from Items i,Shops s,Customers c where i.itno=c.itno
 ----(or)-----
-select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
+--ansi
+select i.*, c.cid,s.Sid from Items i inner join  Customers c on i.itno = c.itno inner join Shops s on c.Sid = s.Sid
 
 --4)LIST 'C','R' TYPE DETAILS WHOSE PRICE IS ABOVE 500
+--logical operators
 select * from Items where Type ='c' or Type='r' and Fees > 500
 --(OR)-----
+--special operator
 select * from Items where Type IN('c','r') and  Fees >500
 
 --5)Make a cursor to get all item details.
-DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
 DECLARE C1 CURSOR FOR SELECT * FROM ITEMS
+DECLARE @S1 INT,@S2 VARCHAR(1),@S3 CHAR(1), @S4 SMALLMONEY
 OPEN 
 FETCH NEXT FROM C1 INTO @S1,@S2,@S3 ,@S4 --START THE LOOP
 WHILE (@@FETCH_STATUS=0)
