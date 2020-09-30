@@ -101,13 +101,13 @@ select @it=itname from inserted
  ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
-
+---count(*)-total number of records
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 ________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
---creation  OF PROCEDURE
+--creation  of PROCEDURE
   create proc EC(@t varchar(10))
   as 
   begin
