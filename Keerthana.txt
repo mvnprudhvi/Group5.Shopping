@@ -2,30 +2,18 @@
 _______________________________SHOPPING DATABASE__________________________
 
 ----Table Creation-----
---Items table-itno as primary key is a constraint: means it should be unique and doesn't allow duplicates--
----itname-is a NOTNULL Constraint--it should not be null--
---Type-is a check constraint and we are checking the type usinh IN  Special operator only particular tpes are allowed
---Fees -is a NOTNULL constraint..here smallmoney is a datatype
-
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
 insert into Items values(101 , 'Nuts','n' ,500),
                         (102 , 'Rice','r' ,1000),
 						(103 , 'Cosmotics','c',1500),
 						(104 , 'Others','o',2000)
 
---Shop table-Sid as primary key is a constraint: means it should be unique and doesn't allow duplicates--
----Sname-is a NOTNULL Constraint--it should not be null--
----Location --is NOTNULL constraint i.e.,it should not be null-
 create table Shop(Sid int primary key,Sname varchar(10)Not Null,Location varchar(10) Not Null)
 insert into Shop values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
 	
---Customers table-Cid as primary key is a constraint: means it should be unique and doesn't allow duplicates--
----itno-is a foreign key  Constraint--References values from Items Table(itno)-Foreign key can have duplicates
---Sid-is a foreign key  Constraint--References values from Shop Table(Sid)--it allows duplicates
-
 create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shop(Sid),Cname varchar(10))
 insert into Customers values(10,101,1,'PRUDHVI'),
                             (20,101,1,'KEERTHANA'),
