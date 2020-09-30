@@ -34,9 +34,6 @@ ________________________________________________________________________________
 ----The EXISTS operator is used to test for the existence of any record in a subquery.
 ---The EXISTS operator returns true if the subquery returns one or more records.
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
-(OR)
---The ANY Operator is used with  WHERE or HAVING clause. The ANY operator returns true if any of the subquery values meet the condition
-select * from Items  where itno >ANY (select itno from Items I,Customers C  where I.itno=C.itno)
 ________________________________________________________________________________________________________________________________________________
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
