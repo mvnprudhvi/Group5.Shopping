@@ -37,10 +37,6 @@ select * from Customers
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED ATLEAST ONE CUSTOMER
 --listing items details which item isn selected atleast one customer by using nthqueries
 select * from items i where exists(select 1 from customers where itno=i.ino)
---(or)--
-select * from Items  where itno >ANY (select itno from Items I,Customers C  where I.itno=C.itno)
-
-
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
 --listing all items,customers,shops details by using cross product
@@ -76,7 +72,7 @@ DEALLOCATE C1
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 CREATE TRIGGER tr1
 ON ITEMS
-instead of insert
+after insert
 AS
 BEGIN
 declare @it varchar(20)
