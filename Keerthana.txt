@@ -114,8 +114,6 @@ select name from sysobjects where xtype='tr'
 
 Select Sid ,COUNT(DISTINCT itno) As TotItems,
 COUNT(cid) As NoOfCustomers from Customers group by Sid
---(OR)---
-select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 ________________________________________________________________________________________________________________________________________
 
