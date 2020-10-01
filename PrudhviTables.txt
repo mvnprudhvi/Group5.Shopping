@@ -1,4 +1,6 @@
- ----Shopping DataBase--
+
+_______________________________SHOPPING DATABASE__________________________
+
 ----Table Creation-----
 create table Items(itno int primary key,itname varchar(10)Not Null,Type char(1) check (Type in ('n','r','c','o')),Fees smallmoney Not Null)
 insert into Items values(101 , 'Nuts','n' ,500),
@@ -11,8 +13,7 @@ insert into Shop values(1,'SH1','Hyderabad'),
                         (2,'SH2','Warangal'),
 						(3,'SH3','Warangal'),
 						(4,'SH4','Hyderabad')
-						
-
+	
 create table Customers(Cid int primary key,itno int foreign key references Items(itno),Sid int foreign key references Shop(Sid),Cname varchar(10))
 insert into Customers values(10,101,1,'PRUDHVI'),
                             (20,101,1,'KEERTHANA'),
@@ -21,38 +22,44 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(50,103,3,'DHINESH'), 
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
+
+
 select * from Shop
 select * from Items
 select * from Customers
 
+________________________________________________________________________________________________________________________________________________
 
 --1)LIST THE ITEMS DETAILS WHICH ITEM IS SELECTED BY ATLEAST ONE CUSTOMER
+----The EXISTS operator is used to test for the existence of any record in a subquery.
+---The EXISTS operator returns true if the subquery returns one or more records.
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
 
-
+________________________________________________________________________________________________________________________________________________
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
+
+--CROSS JOIN is used to combine each row of the first table with each row of the second table. 
+It is also known as the Cartesian join since it returns the Cartesian product of the sets of rows from the joined tables.
+
 SELECT * FROM Items CROSS JOIN Shop , Customers
-
-
+_______________________________________________________________________________________________________________________________________________
 
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
-select i.* ,s.Sid ,c.Cid from Items i,Shop s,Customers c where i.itno=c.itno
-----(or)-----
+
+---INNER JOIN returns matching records from 2 or more tables
 select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
-
-
+_________________________________________________________________________________________________________________________________________
 
 ----4)list 'c','r' type details whose Fees is above 500----
-
+---OR operator returns records either any one is true.
+--AND operator returns records if both the conditions are true.
 select * from Items where Type ='c' or Type='r' and Fees > 500
---(OR)-----
-select * from Items where Type IN('c','r') and  Fees >500
 
-
+___________________________________________________________________________________________________________________________________
 
 ----5)Make a cursor to get all item details.------
-
+--declarion of CURSOR--
 DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
 DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
@@ -64,9 +71,10 @@ FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
-
-
+____________________________________________________________________________________________________________________________________________
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
+
+---creation of TRIGGER
 CREATE TRIGGER tr1
 ON ITEMS
 instead of insert
@@ -79,44 +87,44 @@ select @it=itname from inserted
     ROLLBACK
     RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
   END
-  end
+  END
 
- -- insert into items values(106,'coco','c',500)
- --insert into items values(106,'NUTS','N',500)
+  -----Inserting Records into Ttems table--
+  insert into items values(106,'coco','c',500)
+  insert into items values(107,'rice','r',1100)
+ insert into items values(106,'NUTS','N',500)
 
-
-
+ ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
 
 select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
-
-
+________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
-
+--creation  OF PROCEDURE
   create proc EC(@t varchar(10))
   as 
   begin
   exec('alter table' +@t+'add email varchar(20)')
   end
   exec EC Customers
-
-
+ ________________________________________________________________________________________________________________________________________________
 
   ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
 select * from Customers UNION select * from Items
 select * from Customers UNION ALL select * from Items
 select * from Customers INTERSECT select * from Items
 select * from Customers EXCEPT select * from Items
-
-
-
+__________________________________________________________________________________________________________________________________________
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
+--complex view is created based on 2 or more base tables
+---creation of VIEW
 
 alter VIEW Customers_Shops_VIEW 
 AS SELECT  Customers.Cname,  Shops.Sname
 FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
 
 select * from Customers_Shops_VIEW 
+_____________________________________________________________________________________________________________________________________________
