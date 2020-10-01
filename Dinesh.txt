@@ -63,7 +63,7 @@ DEALLOCATE C1
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 CREATE TRIGGER tr1
 ON ITEMS
-instead of insert
+After insert
 AS
 BEGIN
 declare @it varchar(20)
@@ -82,6 +82,8 @@ select @it=itname from inserted
 --7)To calc shop wise total items,no.of customers?
 Select Sid ,COUNT(DISTINCT itno) As TotItems,
 COUNT(cid) As NoOfCustomers from Customers group by Sid
+--(OR)---
+select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
 
 
 --8)Add the new column ‘email’ into Customers table using dynamic query procedure?

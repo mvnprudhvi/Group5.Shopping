@@ -23,6 +23,11 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(60,103,4,'ASHRITHA'),
 							(70,104,4,'SURESH')
 
+--To get the desciption of table
+sp_help 'tablename'
+--To get the information of table
+Select * from tablename
+
 
 select * from Shop
 select * from Items
@@ -34,9 +39,6 @@ ________________________________________________________________________________
 ----The EXISTS operator is used to test for the existence of any record in a subquery.
 ---The EXISTS operator returns true if the subquery returns one or more records.
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
-(OR)
---The ANY Operator is used with  WHERE or HAVING clause. The ANY operator returns true if any of the subquery values meet the condition
-select * from Items  where itno >ANY (select itno from Items I,Customers C  where I.itno=C.itno)
 ________________________________________________________________________________________________________________________________________________
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
@@ -48,7 +50,7 @@ SELECT * FROM Items CROSS JOIN Shop , Customers
 _______________________________________________________________________________________________________________________________________________
 
 ---3)List all items details with shopid cid details ,if the item id match customers ,items table-----
-
+---Getting Item records including SHOPID and CustomerId based on itno matching in both  tables using 'INNERJOIN'
 ---INNER JOIN returns matching records from 2 or more tables
 select i.*, c.cid,s.Sid   from Items i inner join  Customers c on i.itno = c.itno inner join Shop s on c.Sid = s.Sid
 _________________________________________________________________________________________________________________________________________
@@ -67,68 +69,86 @@ ________________________________________________________________________________
 DECLARE @S1 INT,@S2 VARCHAR(10),@S3 CHAR(1),@S4 smallmoney
 DECLARE C1 CURSOR FOR SELECT * FROM Items
 OPEN C1
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4------START THE LOOP
-WHILE (@@FETCH_STATUS=0)
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4                      ------START THE LOOP
+WHILE (@@FETCH_STATUS=0)                                 ----RETURNS FETCH OPEARTION IS SUCCESSFUL..REPEATS THE CONDITION MULTIPLE TIMES
 BEGIN
 PRINT CAST(@S1 AS VARCHAR)+'   '+@S2+'   '+@S3+' '+@S4
-FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4 -----CONTINUE THE LOOP
+FETCH NEXT FROM C1 INTO @S1,@S2,@S3,@S4                     -----CONTINUE THE LOOP
 END
 CLOSE C1
 DEALLOCATE C1
-____________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________
 --6) Create trigger if the items is added into items table other than ‘n’[nuts]?
 
 ---creation of TRIGGER
-CREATE TRIGGER tr1
+CREATE TRIGGER tr1                  --TRIGGER NAMED AS tr1 On Items Table
 ON ITEMS
-instead of insert
+instead of insert                  ---DML EVENT
 AS
 BEGIN
 declare @it varchar(20)
-select @it=itname from inserted
-  If @it!='Nuts'   
+select @it=itname from inserted         ---------inserting values into empbackup table and we can store that in virtual table 
+                                                     that is inserted
+  If @it!='Nuts'                        ---------Checks the condition whether itname is 'NUTS' (or) not
   BEGIN
-    ROLLBACK
-    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)
+    ROLLBACK                                                   
+    RAISERROR('OTHER ITEMS CANT INSERT,EXCEPT NUTS',1,1)        ------RAISEERROR is a predefined function
   END
   END
 
   -----Inserting Records into Ttems table--
-  insert into items values(106,'coco','c',500)
-  insert into items values(107,'rice','r',1100)
- insert into items values(106,'NUTS','N',500)
+  insert into items values(106,'coco','c',500)       ----CAN'T INSERT 'C' TYPE RECORDS
+  insert into items values(107,'rice','r',1100)      ----CAN'T INSERT 'R' TYPE RECORD
+ insert into items values(106,'NUTS','N',500)   -------RECORD INSERTED SUCCESSFULLY
+
+ --Desciption of trigger tr1
+sp_help 'tr1'
+
+--To get available triggers in database
+select name from sysobjects where xtype='tr'
 
  ___________________________________________________________________________________________________________________________________
 
 ---7)To calc shop wise total items,no.of customers ?----
+---getting total items and total number of customers based on shopid using COUNT function
 
-select Sid Shop,COUNT(*) totalItems,COUNT(*) NoOfCustomers from Customers group by Sid
+Select Sid ,COUNT(DISTINCT itno) As TotItems,
+COUNT(cid) As NoOfCustomers from Customers group by Sid
 
 ________________________________________________________________________________________________________________________________________
 
 -----8)Add the new column ‘email’ into Customers table using dynamic query procedure?----
---creation  OF PROCEDURE
-  create proc EC(@t varchar(10))
-  as 
-  begin
-  exec('alter table' +@t+'add email varchar(20)')
-  end
-  exec EC Customers
+
+ alter PROC ADDCOL(@TN VARCHAR(20))              ---MOIFYING THE PROCEDURE NAMED ADDCOL
+AS
+BEGIN
+  EXEC ('ALTER TABLE '+@TN+' ADD EMAIL VARCHAR(20)')  
+END
+
+EXEC ADDCOL Customers                          ---EMAIL column is added to the Customers Table
+select * from customers
  ________________________________________________________________________________________________________________________________________________
 
-  ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
-select * from Customers UNION select * from Items
-select * from Customers UNION ALL select * from Items
-select * from Customers INTERSECT select * from Items
-select * from Customers EXCEPT select * from Items
+ ----9)TO PERFORM ALL SET OPERATORS USING CUSTOMERS,ITEMS TABLE ?----
+ --getting all records using SET operators
+
+--UNION
+SELECT itno FROM CUSTOMERS UNION SELECT itno FROM ITEMS
+--UNION ALL
+SELECT ITNO FROM CUSTOMERS UNION ALL SELECT ITNO FROM ITEMS
+--INSERECT
+SELECT ITNO FROM CUSTOMERS INTERSECT SELECT ITNO FROM ITEMS
+--EXCEPT
+SELECT CNAME FROM CUSTOMERS EXCEPT SELECT ITNAME FROM  ITEMS
 __________________________________________________________________________________________________________________________________________
+
 --10)TO MAKE COMPLEX VIEW ON CUSTOMERS,SHOPS TABLE ?-----
 --complex view is created based on 2 or more base tables
----creation of VIEW
+---creation of VIEW on customers and shop tables
 
-alter VIEW Customers_Shops_VIEW 
-AS SELECT  Customers.Cname,  Shops.Sname
-FROM Customers, Shops WHERE Customers.Sid=Shops.Sid
+alter VIEW Customers_Shop_VIEW 
+AS SELECT  Customers.Cname,  Shop.Sname
+FROM Customers, Shop WHERE Customers.Sid=Shop.Sid
 
-select * from Customers_Shops_VIEW 
+select * from Customers_Shop_VIEW 
 _____________________________________________________________________________________________________________________________________________
