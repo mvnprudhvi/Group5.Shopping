@@ -24,9 +24,9 @@ insert into Customers values(10,101,1,'PRUDHVI'),
 							(70,104,4,'SURESH')
 
 --To get the desciption of table
-sp_help 'tablename'
+---sp_help 'tablename'
 --To get the information of table
-Select * from tablename
+---Select * from tablename
 
 
 select * from Shop
