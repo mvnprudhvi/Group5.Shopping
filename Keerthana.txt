@@ -39,6 +39,9 @@ ________________________________________________________________________________
 ----The EXISTS operator is used to test for the existence of any record in a subquery.
 ---The EXISTS operator returns true if the subquery returns one or more records.
 SELECT * FROM Items I WHERE EXISTS(SELECT 1 FROM Customers WHERE itno=I.itno)
+--(OR)--
+select * from Items I where 1 < ANY (select count(*) from Customers where itno=I.itno)
+
 ________________________________________________________________________________________________________________________________________________
 
 --2)LIST THE ITEMS,CUSTOMERS,SHOP DETAILS WITH CROSS PRODUCT
